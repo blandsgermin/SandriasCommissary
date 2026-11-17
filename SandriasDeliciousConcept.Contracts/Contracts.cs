@@ -9,8 +9,10 @@ public enum RequisitionStatus { Pending, Approved, Returned, Cancelled, PendingF
 public record RequisitionItemDto(int ItemId, string ItemName, string Unit, decimal Quantity);
 
 public record RequisitionDto(
-    int RfId, string RfNumber, DateTime RequestDate, string Requester, string Purpose,
-    DateTime? RequiredDate, RequisitionStatus Status, IReadOnlyList<RequisitionItemDto> Items);
+    int RfId, string RfNumber, DateTime RequestDate, string Requester,
+    string? CustomerName, DateTime? EventDate, string? Venue, int? Pax, string? Menu,
+    string Purpose, DateTime? RequiredDate, RequisitionStatus Status,
+    IReadOnlyList<RequisitionItemDto> Items);
 
 public record StockCheckResult(int ItemId, decimal Requested, decimal AvailableUnreserved)
 {
@@ -26,6 +28,7 @@ public interface IRequisitionService
     void Return(int rfId, string reason);
     void Cancel(int rfId, string reason);
     void SetStatus(int rfId, RequisitionStatus status);
+    void Update(RequisitionDto rf);   // for a returned or pending request
 }
 
 public interface IInventoryService

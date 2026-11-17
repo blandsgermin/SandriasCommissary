@@ -2,6 +2,7 @@
   <Project Path="SandriasCommissary.Delivery/SandriasDeliciousConcept.Delivery.csproj" Id="7e7d30ac-3252-44d5-be85-88ed523e686b" />
   <Project Path="SandriasCommissary.Purchasing/SandriasDeliciousConcept.Purchasing.csproj" Id="7ac48fd1-4859-42de-9b6d-a000af7b1776" />
   <Project Path="SandriasDeliciousConcept.Contracts/SandriasDeliciousConcept.Contracts.csproj" Id="22d05358-b184-4bd0-b1ec-807d09f72eab" />
+  <Project Path="SandriasDeliciousConcept.Data/SandriasDeliciousConcept.Data.csproj" Id="f2b79ea5-3dda-4f77-a5b3-799db93341e7" />
   <Project Path="SandriasDeliciousConcept.Inventory/SandriasDeliciousConcept.Inventory.csproj" Id="66386a14-1c14-4fc9-8f28-fafe2499f931" />
   <Project Path="SandriasDeliciousConcept.Requisition/SandriasDeliciousConcept.Requisition.csproj" Id="afcd6e57-9caa-481e-9043-65ea6d898309" />
   <Project Path="SandriasDeliciousConcept.UI/SandriasDeliciousConcept.UI.csproj" Id="44be14d9-b2ea-4ffe-91ad-6acbd229b781" />
