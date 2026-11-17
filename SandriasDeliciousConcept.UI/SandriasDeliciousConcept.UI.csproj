@@ -8,4 +8,12 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\SandriasCommissary.Delivery\SandriasDeliciousConcept.Delivery.csproj" />
+    <ProjectReference Include="..\SandriasCommissary.Purchasing\SandriasDeliciousConcept.Purchasing.csproj" />
+    <ProjectReference Include="..\SandriasDeliciousConcept.Contracts\SandriasDeliciousConcept.Contracts.csproj" />
+    <ProjectReference Include="..\SandriasDeliciousConcept.Inventory\SandriasDeliciousConcept.Inventory.csproj" />
+    <ProjectReference Include="..\SandriasDeliciousConcept.Requisition\SandriasDeliciousConcept.Requisition.csproj" />
+  </ItemGroup>
+
 </Project>
