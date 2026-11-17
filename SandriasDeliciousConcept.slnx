@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="SandriasCommissary.Delivery/SandriasDeliciousConcept.Delivery.csproj" Id="7e7d30ac-3252-44d5-be85-88ed523e686b" />
+  <Project Path="SandriasCommissary.Purchasing/SandriasDelicioousConcept.Purchasing.csproj" Id="7ac48fd1-4859-42de-9b6d-a000af7b1776" />
+  <Project Path="SandriasCommissary/SandriasDeliciousConcept.csproj" Id="53fe786e-2ee1-4ae7-8be0-306da749ee78" />
+</Solution>
