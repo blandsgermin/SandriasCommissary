@@ -19,12 +19,22 @@ internal static class Program
         }
 
         var bus = new EventBus();
-        IRequisitionService requisition = new RequisitionService(bus);
-        IItemCatalog catalog = new SqlItemCatalog();
+        var services = new AppServices
+        {
+            Bus = bus,
+            Users = new SqlUserService(),
+            Catalog = new SqlItemCatalog(),
+            Requisition = new RequisitionService(bus)
+        };
 
-        // TEMPORARY until the login screen exists: change "Owner" to "Chef" to test each role
-        var user = new CurrentUser("chef", "Chef", "Chef");
+        while (true)
+        {
+            using var login = new LoginForm(services.Users);
+            if (login.ShowDialog() != DialogResult.OK || login.LoggedInUser is null) break;
 
-        Application.Run(new RequisitionListForm(requisition, catalog, user));
+            using var menu = new MainMenuForm(login.LoggedInUser, services);
+            menu.ShowDialog();
+            if (!menu.LoggedOut) break;
+        }
     }
 }

@@ -83,3 +83,8 @@ public interface IItemCatalog
 }
 
 public record CurrentUser(string Username, string FullName, string Role);
+
+public interface IUserService
+{
+    CurrentUser? Login(string username, string password);
+}
