@@ -1,83 +1,52 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
 using System.Text;
+using System.Windows.Forms;
+
 using SandriasDeliciousConcept.Contracts;
 
 namespace SandriasDeliciousConcept.Requisition;
 
-public class RequisitionListForm : Form
+public partial class RequisitionListForm : Form
 {
     private readonly IRequisitionService _svc;
     private readonly IItemCatalog _catalog;
     private readonly CurrentUser _user;
-
-    private readonly DataGridView _grid = new()
-    {
-        Dock = DockStyle.Fill,
-        ReadOnly = true,
-        AllowUserToAddRows = false,
-        AllowUserToDeleteRows = false,
-        MultiSelect = false,
-        SelectionMode = DataGridViewSelectionMode.FullRowSelect,
-        AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill
-    };
-    private readonly ComboBox _status = new() { DropDownStyle = ComboBoxStyle.DropDownList, Width = 150 };
-    private readonly Button _new = new() { Text = "New", AutoSize = true };
-    private readonly Button _edit = new() { Text = "Edit", AutoSize = true };
-    private readonly Button _approve = new() { Text = "Approve", AutoSize = true };
-    private readonly Button _return = new() { Text = "Return", AutoSize = true };
-    private readonly Button _cancel = new() { Text = "Cancel request", AutoSize = true };
+    private bool _loading;
 
     public RequisitionListForm(IRequisitionService svc, IItemCatalog catalog, CurrentUser user)
     {
+        InitializeComponent();
         _svc = svc; _catalog = catalog; _user = user;
 
-        Text = "Requisitions";
-        Size = new Size(1000, 560);
-        StartPosition = FormStartPosition.CenterScreen;
+        lblUser.Text = $"Logged in as: {user.FullName} ({user.Role})";
 
-        _status.Items.Add("All");
-        foreach (var s in Enum.GetNames<RequisitionStatus>()) _status.Items.Add(s);
-        _status.SelectedIndex = 0;
+        _loading = true;
+        cboStatus.Items.Add("All");
+        foreach (var s in Enum.GetNames<RequisitionStatus>()) cboStatus.Items.Add(s);
+        cboStatus.SelectedIndex = 0;
+        _loading = false;
 
         bool chef = user.Role == "Chef", owner = user.Role == "Owner";
-        _new.Enabled = _edit.Enabled = chef;
-        _approve.Enabled = _return.Enabled = owner;
-        _cancel.Enabled = chef || owner;
-
-        var refresh = new Button { Text = "Refresh", AutoSize = true };
-        var top = new FlowLayoutPanel { Dock = DockStyle.Top, AutoSize = true, Padding = new Padding(8) };
-        top.Controls.Add(new Label
-        {
-            Text = $"Logged in as: {user.FullName} ({user.Role})   Status:",
-            AutoSize = true,
-            Margin = new Padding(0, 8, 8, 0)
-        });
-        top.Controls.AddRange(new Control[] { _status, _new, _edit, _approve, _return, _cancel, refresh });
-
-        Controls.Add(_grid);
-        Controls.Add(top);
-
-        _status.SelectedIndexChanged += (s, e) => LoadData();
-        refresh.Click += (s, e) => LoadData();
-        _new.Click += (s, e) => NewRequest();
-        _edit.Click += (s, e) => EditRequest();
-        _approve.Click += (s, e) => Approve();
-        _return.Click += (s, e) => ReturnRequest();
-        _cancel.Click += (s, e) => CancelRequest();
+        btnNew.Enabled = btnEdit.Enabled = chef;
+        btnApprove.Enabled = btnReturn.Enabled = owner;
+        btnCancel.Enabled = chef || owner;
 
         LoadData();
     }
 
     private int? SelectedId() =>
-        _grid.CurrentRow?.Cells["RfId"].Value is int id ? id : null;
+        dgvRequisitions.CurrentRow?.Cells["RfId"].Value is int id ? id : null;
 
     private void LoadData()
     {
-        RequisitionStatus? filter = _status.SelectedIndex > 0
-            ? Enum.Parse<RequisitionStatus>(_status.SelectedItem!.ToString()!) : null;
+        RequisitionStatus? filter = cboStatus.SelectedIndex > 0
+            ? Enum.Parse<RequisitionStatus>(cboStatus.SelectedItem!.ToString()!) : null;
 
-        _grid.DataSource = _svc.GetAll(filter).Select(r => new
+        dgvRequisitions.DataSource = _svc.GetAll(filter).Select(r => new
         {
             r.RfId,
             RF = r.RfNumber,
@@ -90,16 +59,23 @@ public class RequisitionListForm : Form
             Status = r.Status.ToString()
         }).ToList();
 
-        if (_grid.Columns.Contains("RfId")) _grid.Columns["RfId"]!.Visible = false;
+        if (dgvRequisitions.Columns.Contains("RfId")) dgvRequisitions.Columns["RfId"]!.Visible = false;
     }
 
-    private void NewRequest()
+    private void cboStatus_SelectedIndexChanged(object? sender, EventArgs e)
+    {
+        if (!_loading) LoadData();
+    }
+
+    private void btnRefresh_Click(object? sender, EventArgs e) => LoadData();
+
+    private void btnNew_Click(object? sender, EventArgs e)
     {
         using var form = new RequisitionEditForm(_svc, _catalog.GetAll(), _user);
         if (form.ShowDialog(this) == DialogResult.OK) LoadData();
     }
 
-    private void EditRequest()
+    private void btnEdit_Click(object? sender, EventArgs e)
     {
         if (SelectedId() is not int id) return;
         var rf = _svc.GetById(id);
@@ -113,25 +89,25 @@ public class RequisitionListForm : Form
         if (form.ShowDialog(this) == DialogResult.OK) LoadData();
     }
 
-    private void Approve()
+    private void btnApprove_Click(object? sender, EventArgs e)
     {
         if (SelectedId() is not int id) return;
         if (MessageBox.Show("Approve this requisition?", "Approve", MessageBoxButtons.YesNo) != DialogResult.Yes) return;
         Try(() => _svc.Approve(id, _user.FullName));
     }
 
-    private void ReturnRequest()
+    private void btnReturn_Click(object? sender, EventArgs e)
     {
         if (SelectedId() is not int id) return;
-        var reason = Prompt.Show(this, "Return requisition", "Reason for returning:");
+        var reason = ReasonPromptForm.Ask(this, "Return requisition", "Reason for returning:");
         if (reason is null) return;
         Try(() => _svc.Return(id, reason));
     }
 
-    private void CancelRequest()
+    private void btnCancel_Click(object? sender, EventArgs e)
     {
         if (SelectedId() is not int id) return;
-        var reason = Prompt.Show(this, "Cancel requisition", "Reason for cancelling:");
+        var reason = ReasonPromptForm.Ask(this, "Cancel requisition", "Reason for cancelling:");
         if (reason is null) return;
         Try(() => _svc.Cancel(id, reason));
     }
@@ -139,6 +115,9 @@ public class RequisitionListForm : Form
     private void Try(Action action)
     {
         try { action(); LoadData(); }
-        catch (Exception ex) { MessageBox.Show(ex.Message, "Requisition", MessageBoxButtons.OK, MessageBoxIcon.Warning); }
+        catch (Exception ex)
+        {
+            MessageBox.Show(ex.Message, "Requisition", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+        }
     }
 }
