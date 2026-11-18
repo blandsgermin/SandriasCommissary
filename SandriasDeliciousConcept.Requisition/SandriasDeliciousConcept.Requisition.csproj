@@ -9,6 +9,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SandriasDeliciousConcept.Contracts\SandriasDeliciousConcept.Contracts.csproj" />
+    <ProjectReference Include="..\SandriasDeliciousConcept.Data\SandriasDeliciousConcept.Data.csproj" />
   </ItemGroup>
 
 </Project>
