@@ -1,0 +1,141 @@
+﻿<?xml version="1.0" encoding="utf-8"?><Database Name="SandriasCommissaryDB" Class="PurchasingDataDataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
+  <Connection Mode="AppSettings" ConnectionString="Data Source=LAPTOP-OA3F3CET\SQLEXPRESS;Initial Catalog=SandriasCommissaryDB;Integrated Security=True;Trust Server Certificate=True" SettingsObjectName="SandriasDeliciousConcept.Purchasing.Properties.Settings" SettingsPropertyName="SandriasCommissaryDBConnectionString" Provider="System.Data.SqlClient" />
+  <Table Name="dbo.PurchaseLogItems" Member="PurchaseLogItems">
+    <Type Name="PurchaseLogItem">
+      <Column Name="PurchaseLogItemID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="PurchaseLogID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="POItemID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="ActualQuantity" Type="System.Decimal" DbType="Decimal(12,2) NOT NULL" CanBeNull="false" />
+      <Column Name="ActualUnitPrice" Type="System.Decimal" DbType="Decimal(12,2) NOT NULL" CanBeNull="false" />
+      <Column Name="ActualSubtotal" Type="System.Decimal" DbType="Decimal(12,2) NOT NULL" CanBeNull="false" />
+      <Association Name="PurchaseLog_PurchaseLogItem" Member="PurchaseLog" ThisKey="PurchaseLogID" OtherKey="PurchaseLogID" Type="PurchaseLog" IsForeignKey="true" />
+      <Association Name="PurchaseOrderItem_PurchaseLogItem" Member="PurchaseOrderItem" ThisKey="POItemID" OtherKey="POItemID" Type="PurchaseOrderItem" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Suppliers" Member="Suppliers">
+    <Type Name="Supplier">
+      <Column Name="SupplierID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="SupplierName" Type="System.String" DbType="NVarChar(150) NOT NULL" CanBeNull="false" />
+      <Column Name="ContactPerson" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
+      <Column Name="ContactNumber" Type="System.String" DbType="NVarChar(30)" CanBeNull="true" />
+      <Column Name="Email" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
+      <Column Name="Address" Type="System.String" DbType="NVarChar(250)" CanBeNull="true" />
+      <Column Name="SupplierType" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="IsActive" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="DateCreated" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Association Name="Supplier_PurchaseOrder" Member="PurchaseOrders" ThisKey="SupplierID" OtherKey="SupplierID" Type="PurchaseOrder" />
+      <Association Name="Supplier_SupplierQuotation" Member="SupplierQuotations" ThisKey="SupplierID" OtherKey="SupplierID" Type="SupplierQuotation" />
+    </Type>
+  </Table>
+  <Table Name="dbo.PurchaseLogs" Member="PurchaseLogs">
+    <Type Name="PurchaseLog">
+      <Column Name="PurchaseLogID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="PurchaseOrderID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="PurchaseDate" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="ReceiptType" Type="System.String" DbType="NVarChar(30)" CanBeNull="true" />
+      <Column Name="ReceiptNumber" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="ActualTotalAmount" Type="System.Decimal" DbType="Decimal(12,2) NOT NULL" CanBeNull="false" />
+      <Column Name="PurchasedBy" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
+      <Column Name="Remarks" Type="System.String" DbType="NVarChar(500)" CanBeNull="true" />
+      <Association Name="PurchaseLog_PurchaseLogItem" Member="PurchaseLogItems" ThisKey="PurchaseLogID" OtherKey="PurchaseLogID" Type="PurchaseLogItem" />
+      <Association Name="PurchaseOrder_PurchaseLog" Member="PurchaseOrder" ThisKey="PurchaseOrderID" OtherKey="PurchaseOrderID" Type="PurchaseOrder" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.PurchaseOrderItems" Member="PurchaseOrderItems">
+    <Type Name="PurchaseOrderItem">
+      <Column Name="POItemID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="PurchaseOrderID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="RequestItemID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="ItemName" Type="System.String" DbType="NVarChar(150) NOT NULL" CanBeNull="false" />
+      <Column Name="QuantityOrdered" Type="System.Decimal" DbType="Decimal(12,2) NOT NULL" CanBeNull="false" />
+      <Column Name="Unit" Type="System.String" DbType="NVarChar(30) NOT NULL" CanBeNull="false" />
+      <Column Name="UnitPrice" Type="System.Decimal" DbType="Decimal(12,2) NOT NULL" CanBeNull="false" />
+      <Column Name="Subtotal" Type="System.Decimal" DbType="Decimal(12,2) NOT NULL" CanBeNull="false" />
+      <Association Name="PurchaseOrderItem_PurchaseLogItem" Member="PurchaseLogItems" ThisKey="POItemID" OtherKey="POItemID" Type="PurchaseLogItem" />
+      <Association Name="PurchaseOrder_PurchaseOrderItem" Member="PurchaseOrder" ThisKey="PurchaseOrderID" OtherKey="PurchaseOrderID" Type="PurchaseOrder" IsForeignKey="true" />
+      <Association Name="PurchaseRequestItem_PurchaseOrderItem" Member="PurchaseRequestItem" ThisKey="RequestItemID" OtherKey="RequestItemID" Type="PurchaseRequestItem" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.PurchaseOrders" Member="PurchaseOrders">
+    <Type Name="PurchaseOrder">
+      <Column Name="PurchaseOrderID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="PONumber" Type="System.String" DbType="NVarChar(30) NOT NULL" CanBeNull="false" />
+      <Column Name="PurchaseRequestID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="SupplierID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="QuotationID" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="PODate" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="ExpectedDeliveryDate" Type="System.DateTime" DbType="Date" CanBeNull="true" />
+      <Column Name="TotalAmount" Type="System.Decimal" DbType="Decimal(12,2) NOT NULL" CanBeNull="false" />
+      <Column Name="POStatus" Type="System.String" DbType="NVarChar(30) NOT NULL" CanBeNull="false" />
+      <Association Name="PurchaseOrder_PurchaseLog" Member="PurchaseLogs" ThisKey="PurchaseOrderID" OtherKey="PurchaseOrderID" Type="PurchaseLog" />
+      <Association Name="PurchaseOrder_PurchaseOrderItem" Member="PurchaseOrderItems" ThisKey="PurchaseOrderID" OtherKey="PurchaseOrderID" Type="PurchaseOrderItem" />
+      <Association Name="Supplier_PurchaseOrder" Member="Supplier" ThisKey="SupplierID" OtherKey="SupplierID" Type="Supplier" IsForeignKey="true" />
+      <Association Name="PurchaseRequest_PurchaseOrder" Member="PurchaseRequest" ThisKey="PurchaseRequestID" OtherKey="PurchaseRequestID" Type="PurchaseRequest" IsForeignKey="true" />
+      <Association Name="SupplierQuotation_PurchaseOrder" Member="SupplierQuotation" ThisKey="QuotationID" OtherKey="QuotationID" Type="SupplierQuotation" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.PurchaseRequestItems" Member="PurchaseRequestItems">
+    <Type Name="PurchaseRequestItem">
+      <Column Name="RequestItemID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="PurchaseRequestID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="ItemCode" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="ItemName" Type="System.String" DbType="NVarChar(150) NOT NULL" CanBeNull="false" />
+      <Column Name="Quantity" Type="System.Decimal" DbType="Decimal(12,2) NOT NULL" CanBeNull="false" />
+      <Column Name="Unit" Type="System.String" DbType="NVarChar(30) NOT NULL" CanBeNull="false" />
+      <Column Name="EstimatedUnitPrice" Type="System.Decimal" DbType="Decimal(12,2)" CanBeNull="true" />
+      <Column Name="EstimatedSubtotal" Type="System.Decimal" DbType="Decimal(12,2)" CanBeNull="true" />
+      <Column Name="Remarks" Type="System.String" DbType="NVarChar(250)" CanBeNull="true" />
+      <Association Name="PurchaseRequestItem_PurchaseOrderItem" Member="PurchaseOrderItems" ThisKey="RequestItemID" OtherKey="RequestItemID" Type="PurchaseOrderItem" />
+      <Association Name="PurchaseRequestItem_QuotationItem" Member="QuotationItems" ThisKey="RequestItemID" OtherKey="RequestItemID" Type="QuotationItem" />
+      <Association Name="PurchaseRequest_PurchaseRequestItem" Member="PurchaseRequest" ThisKey="PurchaseRequestID" OtherKey="PurchaseRequestID" Type="PurchaseRequest" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.PurchaseRequests" Member="PurchaseRequests">
+    <Type Name="PurchaseRequest">
+      <Column Name="PurchaseRequestID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="PRNumber" Type="System.String" DbType="NVarChar(30) NOT NULL" CanBeNull="false" />
+      <Column Name="RequisitionReference" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="RequestedBy" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="RequestDate" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="RequiredDate" Type="System.DateTime" DbType="Date" CanBeNull="true" />
+      <Column Name="Purpose" Type="System.String" DbType="NVarChar(250)" CanBeNull="true" />
+      <Column Name="EstimatedBudget" Type="System.Decimal" DbType="Decimal(12,2)" CanBeNull="true" />
+      <Column Name="TotalEstimatedAmount" Type="System.Decimal" DbType="Decimal(12,2)" CanBeNull="true" />
+      <Column Name="RequestStatus" Type="System.String" DbType="NVarChar(30) NOT NULL" CanBeNull="false" />
+      <Column Name="ApprovedBy" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
+      <Column Name="ApprovalDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="Remarks" Type="System.String" DbType="NVarChar(500)" CanBeNull="true" />
+      <Association Name="PurchaseRequest_PurchaseOrder" Member="PurchaseOrders" ThisKey="PurchaseRequestID" OtherKey="PurchaseRequestID" Type="PurchaseOrder" />
+      <Association Name="PurchaseRequest_PurchaseRequestItem" Member="PurchaseRequestItems" ThisKey="PurchaseRequestID" OtherKey="PurchaseRequestID" Type="PurchaseRequestItem" />
+      <Association Name="PurchaseRequest_SupplierQuotation" Member="SupplierQuotations" ThisKey="PurchaseRequestID" OtherKey="PurchaseRequestID" Type="SupplierQuotation" />
+    </Type>
+  </Table>
+  <Table Name="dbo.QuotationItems" Member="QuotationItems">
+    <Type Name="QuotationItem">
+      <Column Name="QuotationItemID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="QuotationID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="RequestItemID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="UnitPrice" Type="System.Decimal" DbType="Decimal(12,2) NOT NULL" CanBeNull="false" />
+      <Column Name="QuantityOffered" Type="System.Decimal" DbType="Decimal(12,2) NOT NULL" CanBeNull="false" />
+      <Column Name="Subtotal" Type="System.Decimal" DbType="Decimal(12,2) NOT NULL" CanBeNull="false" />
+      <Association Name="PurchaseRequestItem_QuotationItem" Member="PurchaseRequestItem" ThisKey="RequestItemID" OtherKey="RequestItemID" Type="PurchaseRequestItem" IsForeignKey="true" />
+      <Association Name="SupplierQuotation_QuotationItem" Member="SupplierQuotation" ThisKey="QuotationID" OtherKey="QuotationID" Type="SupplierQuotation" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.SupplierQuotations" Member="SupplierQuotations">
+    <Type Name="SupplierQuotation">
+      <Column Name="QuotationID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="QuotationNumber" Type="System.String" DbType="NVarChar(30) NOT NULL" CanBeNull="false" />
+      <Column Name="PurchaseRequestID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="SupplierID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="QuotationDate" Type="System.DateTime" DbType="Date NOT NULL" CanBeNull="false" />
+      <Column Name="ValidUntil" Type="System.DateTime" DbType="Date" CanBeNull="true" />
+      <Column Name="QuotationStatus" Type="System.String" DbType="NVarChar(30) NOT NULL" CanBeNull="false" />
+      <Column Name="Remarks" Type="System.String" DbType="NVarChar(500)" CanBeNull="true" />
+      <Association Name="SupplierQuotation_PurchaseOrder" Member="PurchaseOrders" ThisKey="QuotationID" OtherKey="QuotationID" Type="PurchaseOrder" />
+      <Association Name="SupplierQuotation_QuotationItem" Member="QuotationItems" ThisKey="QuotationID" OtherKey="QuotationID" Type="QuotationItem" />
+      <Association Name="PurchaseRequest_SupplierQuotation" Member="PurchaseRequest" ThisKey="PurchaseRequestID" OtherKey="PurchaseRequestID" Type="PurchaseRequest" IsForeignKey="true" />
+      <Association Name="Supplier_SupplierQuotation" Member="Supplier" ThisKey="SupplierID" OtherKey="SupplierID" Type="Supplier" IsForeignKey="true" />
+    </Type>
+  </Table>
+</Database>
