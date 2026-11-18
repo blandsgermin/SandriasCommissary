@@ -74,3 +74,12 @@ public class EventBus : IEventBus
             foreach (var h in list.ToList()) ((Action<T>)h)(evt);
     }
 }
+
+public record ItemDto(int ItemId, string ItemName, string Unit);
+
+public interface IItemCatalog
+{
+    IReadOnlyList<ItemDto> GetAll();
+}
+
+public record CurrentUser(string Username, string FullName, string Role);

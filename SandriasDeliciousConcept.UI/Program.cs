@@ -17,6 +17,14 @@ internal static class Program
             MessageBox.Show("Could not set up the database:\n" + ex.Message);
             return;
         }
-        Application.Run(new Form1());
+
+        var bus = new EventBus();
+        IRequisitionService requisition = new RequisitionService(bus);
+        IItemCatalog catalog = new SqlItemCatalog();
+
+        // TEMPORARY until the login screen exists: change "Owner" to "Chef" to test each role
+        var user = new CurrentUser("chef", "Chef", "Chef");
+
+        Application.Run(new RequisitionListForm(requisition, catalog, user));
     }
 }
