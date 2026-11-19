@@ -9,8 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SandriasCommissary.Delivery\SandriasDeliciousConcept.Delivery.csproj" />
-    <ProjectReference Include="..\SandriasCommissary.Purchasing\SandriasDeliciousConcept.Purchasing.csproj" />
+    <ProjectReference Include="..\SandriasDeliciousConcept.Delivery\SandriasDeliciousConcept.Delivery.csproj" />
     <ProjectReference Include="..\SandriasDeliciousConcept.Contracts\SandriasDeliciousConcept.Contracts.csproj" />
     <ProjectReference Include="..\SandriasDeliciousConcept.Data\SandriasDeliciousConcept.Data.csproj" />
     <ProjectReference Include="..\SandriasDeliciousConcept.Inventory\SandriasDeliciousConcept.Inventory.csproj" />
