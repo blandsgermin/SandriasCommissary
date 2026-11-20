@@ -24,6 +24,7 @@ internal static class Program
             Bus = bus,
             Users = new SqlUserService(),
             Catalog = new SqlItemCatalog(),
+            Dishes = new SqlDishCatalog(),
             Requisition = new RequisitionService(bus)
         };
 

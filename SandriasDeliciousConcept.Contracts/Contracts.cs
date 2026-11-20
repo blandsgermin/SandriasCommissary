@@ -6,13 +6,18 @@ namespace SandriasDeliciousConcept.Contracts;
 
 public enum RequisitionStatus { Pending, Approved, Returned, Cancelled, PendingFulfillment, Fulfilled }
 
-public record RequisitionItemDto(int ItemId, string ItemName, string Unit, decimal Quantity);
+public enum OrderType { PackedMeal, Catering }
+
+public record RequisitionDishDto(int? DishId, string DishName, string? Category, int? Packs);
+public record DishDto(int DishId, string DishName, string Category);
+
+public record RequisitionItemDto(int ItemId, string ItemName, string Unit, decimal Quantity, string? Notes = null);
 
 public record RequisitionDto(
-    int RfId, string RfNumber, DateTime RequestDate, string Requester,
-    string? CustomerName, DateTime? EventDate, string? Venue, int? Pax, string? Menu,
+    int RfId, string RfNumber, DateTime RequestDate, string Requester, OrderType OrderType,
+    string? CustomerName, DateTime? EventDate, string? Venue, int? Pax,
     string Purpose, DateTime? RequiredDate, RequisitionStatus Status,
-    IReadOnlyList<RequisitionItemDto> Items);
+    IReadOnlyList<RequisitionDishDto> Dishes, IReadOnlyList<RequisitionItemDto> Items);
 
 public record StockCheckResult(int ItemId, decimal Requested, decimal AvailableUnreserved)
 {
@@ -80,6 +85,12 @@ public record ItemDto(int ItemId, string ItemName, string Unit);
 public interface IItemCatalog
 {
     IReadOnlyList<ItemDto> GetAll();
+    ItemDto Add(string itemName, string unit);
+}
+
+public interface IDishCatalog
+{
+    IReadOnlyList<DishDto> GetAll();
 }
 
 public record CurrentUser(string Username, string FullName, string Role);

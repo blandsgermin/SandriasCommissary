@@ -35,8 +35,7 @@ public partial class MainMenuForm : Form
 
     private void btnRequisition_Click(object? sender, EventArgs e)
     {
-        using var form = new RequisitionListForm(_services.Requisition, _services.Catalog, _user);
-        form.ShowDialog(this);
+        using var form = new RequisitionListForm(_services.Requisition, _services.Catalog, _services.Dishes, _user);
     }
 
     // TODO (Inventory owner): replace the message with your own form, like the Requisition button above.

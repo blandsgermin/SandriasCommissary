@@ -1,0 +1,23 @@
+﻿IF COL_LENGTH('dbo.RF', 'OrderType') IS NULL
+    ALTER TABLE dbo.RF ADD OrderType NVARCHAR(20) NOT NULL CONSTRAINT DF_RF_OrderType DEFAULT N'Catering';
+GO
+IF COL_LENGTH('dbo.RFItem', 'Notes') IS NULL
+    ALTER TABLE dbo.RFItem ADD Notes NVARCHAR(200) NULL;
+GO
+IF OBJECT_ID(N'dbo.Dishes', N'U') IS NULL
+CREATE TABLE dbo.Dishes (
+    DishId   INT IDENTITY(1,1) PRIMARY KEY,
+    DishName NVARCHAR(100) NOT NULL UNIQUE,
+    Category NVARCHAR(30)  NOT NULL
+);
+GO
+IF OBJECT_ID(N'dbo.RFDish', N'U') IS NULL
+CREATE TABLE dbo.RFDish (
+    RfDishId INT IDENTITY(1,1) PRIMARY KEY,
+    RfId     INT NOT NULL REFERENCES dbo.RF(RfId) ON DELETE CASCADE,
+    DishId   INT NULL,
+    DishName NVARCHAR(100) NOT NULL,
+    Category NVARCHAR(30)  NULL,
+    Packs    INT NULL CHECK (Packs IS NULL OR Packs > 0)
+);
+GO

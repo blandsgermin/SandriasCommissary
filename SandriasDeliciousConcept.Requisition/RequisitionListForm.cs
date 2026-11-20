@@ -5,7 +5,6 @@ using System.Data;
 using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
-
 using SandriasDeliciousConcept.Contracts;
 
 namespace SandriasDeliciousConcept.Requisition;
@@ -13,14 +12,15 @@ namespace SandriasDeliciousConcept.Requisition;
 public partial class RequisitionListForm : Form
 {
     private readonly IRequisitionService _svc;
-    private readonly IItemCatalog _catalog;
+    private readonly IItemCatalog _items;
+    private readonly IDishCatalog _dishes;
     private readonly CurrentUser _user;
     private bool _loading;
 
-    public RequisitionListForm(IRequisitionService svc, IItemCatalog catalog, CurrentUser user)
+    public RequisitionListForm(IRequisitionService svc, IItemCatalog items, IDishCatalog dishes, CurrentUser user)
     {
         InitializeComponent();
-        _svc = svc; _catalog = catalog; _user = user;
+        _svc = svc; _items = items; _dishes = dishes; _user = user;
 
         lblUser.Text = $"Logged in as: {user.FullName} ({user.Role})";
 
@@ -52,10 +52,10 @@ public partial class RequisitionListForm : Form
             RF = r.RfNumber,
             Date = r.RequestDate.ToString("yyyy-MM-dd"),
             r.Requester,
+            Type = r.OrderType == OrderType.PackedMeal ? "Packed meal" : "Catering",
             Customer = r.CustomerName,
             Event = r.EventDate?.ToString("yyyy-MM-dd"),
             r.Pax,
-            r.Menu,
             Status = r.Status.ToString()
         }).ToList();
 
@@ -71,7 +71,7 @@ public partial class RequisitionListForm : Form
 
     private void btnNew_Click(object? sender, EventArgs e)
     {
-        using var form = new RequisitionEditForm(_svc, _catalog.GetAll(), _user);
+        using var form = new RequisitionEditForm(_svc, _items, _dishes, _user);
         if (form.ShowDialog(this) == DialogResult.OK) LoadData();
     }
 
@@ -85,7 +85,7 @@ public partial class RequisitionListForm : Form
             MessageBox.Show("Only a pending or returned requisition can be edited.");
             return;
         }
-        using var form = new RequisitionEditForm(_svc, _catalog.GetAll(), _user, rf);
+        using var form = new RequisitionEditForm(_svc, _items, _dishes, _user, rf);
         if (form.ShowDialog(this) == DialogResult.OK) LoadData();
     }
 
